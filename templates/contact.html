@@ -28,8 +28,6 @@
     h1 {
       text-align: center;
       margin-bottom: 20px;
-      font-family: "Roboto", sans-serif;
-      font-size: 24px;
     }
 
     .input-group {
@@ -40,15 +38,13 @@
       display: block;
       margin-bottom: 5px;
       font-weight: bold;
-      font-family: "Roboto", sans-serif;
     }
 
     input, textarea {
       width: 100%;
       padding: 10px;
-      border: 1px solid #ddd;
+      border: 1px solid #ccc;
       border-radius: 5px;
-      font-family: "Roboto", sans-serif;
     }
 
     textarea {
@@ -59,34 +55,15 @@
       margin-top: 10px;
       width: 100%;
       padding: 10px;
-      border: 1px solid #ddd;
+      border: 1px solid #ccc;
       border-radius: 5px;
-      background-color: #0099ff;
+      background-color: #000;
       color: #fff;
       cursor: pointer;
-      font-family: "Roboto", sans-serif;
     }
 
     button:hover {
-      background-color: #0066cc;
-    }
-
-    .icon {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      color: #ccc;
-    }
-
-    #message {
-      padding-left: 40px;
-    }
-
-    .success-message {
-      color: green;
-      font-size: 16px;
-      text-align: center;
-      margin-top: 10px;
+      background-color: #333;
     }
   </style>
 </head>
@@ -104,7 +81,6 @@
       </div>
       <div class="input-group">
         <label for="message">Message</label>
-        <i class="icon fa fa-envelope"></i>
         <textarea id="message" name="message" required></textarea>
       </div>
       <button type="submit">Envoyer</button>
