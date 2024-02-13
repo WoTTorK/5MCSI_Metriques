@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -14,17 +15,23 @@
         // Convertir les données en tableau Google Charts
         var dataTable = new google.visualization.DataTable();
         dataTable.addColumn('string', 'Date');
-        dataTable.addColumn('number', 'Valeur');
+        dataTable.addColumn('number', 'Température Minimale');
+        dataTable.addColumn('number', 'Température Maximale');
         data.results.forEach(entry => {
           var date = new Date(entry.Jour * 1000);
-          dataTable.addRow([date.toLocaleDateString(), entry.temp]);
+          dataTable.addRow([date.toLocaleDateString(), entry.tempmin, entry.tempmax]);
         });
         // Configuration du diagramme à colonnes
         var options = {
           title: 'Évolution des températures de Paris pour les 16 prochains jours',
-          // Type de graphique : 'column' pour un diagramme à colonnes
           chartType: 'column',
-          legend: { position: 'bottom' }
+          legend: { position: 'bottom' },
+          series: {
+            // Série pour les températures minimales
+            0: { color: '#336699' },
+            // Série pour les températures maximales
+            1: { color: '#993366' }
+          }
         };
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
         chart.draw(dataTable, options);
