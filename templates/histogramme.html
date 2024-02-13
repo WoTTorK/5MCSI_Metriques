@@ -14,10 +14,11 @@
         // Convertir les données en tableau Google Charts
         var dataTable = new google.visualization.DataTable();
         dataTable.addColumn('string', 'Date');
-        dataTable.addColumn('number', 'Valeur');
+        dataTable.addColumn('number', 'Température maximale');
+        dataTable.addColumn('number', 'Température minimale');
         data.results.forEach(entry => {
           var date = new Date(entry.Jour * 1000);
-          dataTable.addRow([date.toLocaleDateString(), entry.temp]);
+          dataTable.addRow([date.toLocaleDateString(), entry.temp_max, entry.temp_min]);
         });
         // Configuration du diagramme à colonnes
         var options = {
