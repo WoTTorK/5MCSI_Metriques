@@ -1,41 +1,40 @@
-<html>
+<!DOCTYPE html>
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Histogramme</title>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Météo à Paris</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="chart_div"></div>
-  <script>
-    google.charts.load('current', {packages: ['corechart']});
-    google.charts.setOnLoadCallback(drawBackgroundColor);
-    function drawBackgroundColor() {
-      function drawChart(data) {
-        // Convertir les données en tableau Google Charts
-        var dataTable = new google.visualization.DataTable();
-        dataTable.addColumn('string', 'Date');
-        dataTable.addColumn('number', 'Valeur');
-        data.results.forEach(entry => {
-          var date = new Date(entry.Jour * 1000);
-          dataTable.addRow([date.toLocaleDateString(), entry.temp]);
-        });
-        // Configuration du diagramme à colonnes
-        var options = {
-          title: 'Évolution des températures de Paris pour les 16 prochains jours',
-          // Type de graphique : 'column' pour un diagramme à colonnes
-          chartType: 'column',
-          legend: { position: 'bottom' }
-        };
-        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-        chart.draw(dataTable, options);
+  <h1>Météo à Paris</h1>
+  <div id="meteo-data">
+    <script>
+      const meteoData = {{ results | tojson }};
+
+      // Fonction pour afficher les données
+      function afficherMeteo(data) {
+        const element = document.getElementById("meteo-data");
+        element.innerHTML = "";
+
+        for (const item of data) {
+          const jour = item.Jour;
+          const temp = item.temp.toFixed(1); // Arrondi à une décimale
+
+          // Création d'une div pour chaque élément
+          const divElement = document.createElement("div");
+          divElement.classList.add("meteo-item");
+          divElement.innerHTML = `
+            <h3>${jour}</h3>
+            <p>Température : ${temp}°C</p>
+          `;
+
+          element.appendChild(divElement);
+        }
       }
-      // Récupération des données depuis l'API PARIS
-      fetch('/paris/')
-        .then(response => response.json())
-        .then(data => {
-          drawChart(data);
-        })
-    }
-  </script>
+
+      afficherMeteo(meteoData);
+    </script>
+  </div>
 </body>
 </html>
