@@ -20,6 +20,10 @@
           var date = new Date(entry.Jour * 1000);
           dataTable.addRow([date.toLocaleDateString(), entry.tempmin, entry.tempmax]);
         });
+
+        // Déterminer l'échelle optimale pour l'axe vertical
+        var vAxisRange = google.visualization.getScaleRange(dataTable, 1);
+
         // Configuration du diagramme à colonnes
         var options = {
           title: 'Évolution des températures de Paris pour les 16 prochains jours',
@@ -30,11 +34,30 @@
             0: { color: '#336699' },
             // Série pour les températures maximales
             1: { color: '#993366' }
+          },
+          vAxis: {
+            // Utilisation de l'échelle automatique
+            minValue: vAxisRange.min,
+            maxValue: vAxisRange.max,
+            // Afficher les valeurs des repères
+            gridlines: {
+              count: 10,
+              labels: {
+                format: '#°C'
+              }
+            }
+          },
+          hAxis: {
+            gridlines: {
+              count: 4
+            }
           }
         };
+
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
         chart.draw(dataTable, options);
       }
+
       // Récupération des données depuis l'API
       fetch('/tawarano/')
         .then(response => response.json())
