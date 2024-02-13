@@ -29,8 +29,8 @@
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
         chart.draw(dataTable, options);
       }
-      // Récupération des données depuis l'API
-      fetch('/tawarano/')
+      // Récupération des données depuis l'API PARIS
+      fetch('/paris/')
         .then(response => response.json())
         .then(data => {
           drawChart(data);
