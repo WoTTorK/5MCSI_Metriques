@@ -1,33 +1,41 @@
-<html>
-  <head>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['bar']});
-      google.charts.setOnLoadCallback(drawChart);
-
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['Year', 'Sales', 'Expenses', 'Profit'],
-          ['2014', 1000, 400, 200],
-          ['2015', 1170, 460, 250],
-          ['2016', 660, 1120, 300],
-          ['2017', 1030, 540, 350]
-        ]);
-
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Diagramme à Colonnes - Météo Paris</title>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+  <div id="chart_div"></div>
+  <script>
+    google.charts.load('current', {packages: ['corechart']});
+    google.charts.setOnLoadCallback(drawBackgroundColor);
+    function drawBackgroundColor() {
+      function drawChart(data) {
+        // Convertir les données en tableau Google Charts
+        var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn('string', 'Date');
+        dataTable.addColumn('number', 'Valeur');
+        data.results.forEach(entry => {
+          var date = new Date(entry.Jour * 1000);
+          dataTable.addRow([date.toLocaleDateString(), entry.temp]);
+        });
+        // Configuration du diagramme à colonnes
         var options = {
-          chart: {
-            title: 'Company Performance',
-            subtitle: 'Sales, Expenses, and Profit: 2014-2017',
-          }
+          title: 'Évolution des températures de Paris pour les 16 prochains jours',
+          // Type de graphique : 'column' pour un diagramme à colonnes
+          chartType: 'column',
+          legend: { position: 'bottom' }
         };
-
-        var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
-
-        chart.draw(data, google.charts.Bar.convertOptions(options));
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(dataTable, options);
       }
-    </script>
-  </head>
-  <body>
-    <div id="columnchart_material" style="width: 800px; height: 500px;"></div>
-  </body>
+      // Récupération des données depuis l'API
+      fetch('/tawarano/')
+        .then(response => response.json())
+        .then(data => {
+          drawChart(data);
+        })
+    }
+  </script>
+</body>
 </html>
