@@ -1,40 +1,65 @@
-<!DOCTYPE html>
-<html lang="fr">
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Météo à Paris</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Histogramme - Min/Max Températures</title>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 </head>
 <body>
-  <h1>Météo à Paris</h1>
-  <div id="meteo-data">
-    <script>
-      const meteoData = {{ results | tojson }};
+  <div id="chart_div"></div>
+  <script>
+  google.charts.load('current', {packages: ['corechart']});
+  google.charts.setOnLoadCallback(drawChart);
 
-      // Fonction pour afficher les données
-      function afficherMeteo(data) {
-        const element = document.getElementById("meteo-data");
-        element.innerHTML = "";
+  function drawChart(data) {
+    // Prepare data with min and max temperatures
+    const dailyData = [];
+    const days = {}; // Store unique days with min and max temps
 
-        for (const item of data) {
-          const jour = item.Jour;
-          const temp = item.temp.toFixed(1); // Arrondi à une décimale
+    data.results.forEach(entry => {
+      const date = new Date(entry.Jour * 1000);
+      const dayString = date.toLocaleDateString();
 
-          // Création d'une div pour chaque élément
-          const divElement = document.createElement("div");
-          divElement.classList.add("meteo-item");
-          divElement.innerHTML = `
-            <h3>${jour}</h3>
-            <p>Température : ${temp}°C</p>
-          `;
-
-          element.appendChild(divElement);
-        }
+      if (!days[dayString]) {
+        days[dayString] = { min: entry.temp, max: entry.temp };
+      } else {
+        days[dayString].min = Math.min(days[dayString].min, entry.temp);
+        days[dayString].max = Math.max(days[dayString].max, entry.temp);
       }
+    });
 
-      afficherMeteo(meteoData);
-    </script>
-  </div>
+    // Loop through daily data and add to chart
+    for (const day in days) {
+      dailyData.push([day, days[day].min, days[day].max]);
+    }
+
+    // Convert data to Google Charts format
+    const dataTable = new google.visualization.DataTable();
+    dataTable.addColumn('string', 'Date');
+    dataTable.addColumn('number', 'Température Minimale');
+    dataTable.addColumn('number', 'Température Maximale');
+    dataTable.addRows(dailyData);
+
+    // Configuration du diagramme à colonnes
+    const options = {
+      title: 'Températures quotidiennes minimum et maximum à Paris pour les 16 prochains jours',
+      chartType: 'column',
+      legend: { position: 'bottom' },
+      series: {
+        0: { color: '#00B233' }, // Min temp in green
+        1: { color: '#FF1744' }  // Max temp in red
+      }
+    };
+
+    const chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+    chart.draw(dataTable, options);
+  }
+
+  // Récupération des données depuis l'API PARIS
+  fetch('/paris/')
+    .then(response => response.json())
+    .then(data => {
+      drawChart(data);
+    });
+  </script>
 </body>
 </html>
