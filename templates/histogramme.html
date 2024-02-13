@@ -41,7 +41,7 @@
 
     // Configuration du diagramme à colonnes
     const options = {
-      title: 'Températures quotidiennes minimum et maximum à Paris pour les 16 prochains jours',
+      title: 'Températures quotidiennes minimum et maximum à Tawarano pour les 16 prochains jours',
       chartType: 'column',
       legend: { position: 'bottom' },
       series: {
@@ -55,7 +55,7 @@
   }
 
   // Récupération des données depuis l'API PARIS
-  fetch('/paris/')
+  fetch('/tawarano/')
     .then(response => response.json())
     .then(data => {
       drawChart(data);
